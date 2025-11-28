@@ -4,7 +4,7 @@ export default function App() {
   
   // --- TES DONNÉES ---
   const profile = {
-    nom: "Loic Ngoumou",
+    nom: "Loïc Ngoumou",
     titre: "Développeur Web & Mobile | React.js",
     bio: "Étudiant passionné par la création d'interfaces modernes et performantes. Je transforme des problèmes complexes en solutions digitales simples et élégantes.",
     email: "loicngoumou75@gmail.com",
