@@ -4,7 +4,7 @@ export default function App() {
   
   // --- TES DONNÉES (Change les infos ici) ---
   const profile = {
-    nom: "Ngoumou Loic",
+    nom: "Loic Ngoumou",
     titre: "Développeur Web & Mobile | React.js",
     bio: "Étudiant passionné par la création d'interfaces modernes et performantes. Je transforme des problèmes complexes en solutions digitales simples et élégantes.",
     email: "loicngoumou75@gmail.com",
@@ -39,7 +39,18 @@ export default function App() {
       {/* --- NAV BAR --- */}
       <nav className="fixed top-0 w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-800 z-50">
         <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <span className="font-bold text-xl text-blue-500">MonPortfolio<span className="text-white">.</span></span>
+          {/* LOGO + NOM */}
+          <div className="flex items-center gap-3">
+            <img 
+              src="/mon-logo.png" 
+              alt="Logo" 
+              className="h-10 w-10 object-contain bg-slate-800 rounded-lg p-1 border border-slate-700" 
+            />
+            <span className="font-bold text-xl text-blue-500 hidden sm:block">
+              {profile.nom.split(' ')[0]}<span className="text-white">.</span> 
+              {/* Affiche juste ton Prénom (plus court) */}
+            </span>
+          </div>
           <div className="flex gap-4">
             <a href={profile.github} target="_blank" className="hover:text-blue-400 transition"><Github size={20} /></a>
             <a href={profile.facebook} target="_blank" className="hover:text-blue-400 transition"><Facebook size={20} /></a>
