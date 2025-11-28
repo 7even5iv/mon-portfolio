@@ -13,16 +13,27 @@ export default function App() {
   };
 
   const projects = [
+      // PROJET 1 : AFRILANE
     {
       id: 1,
       titre: "Afrilane Student Portal",
-      desc: "Application Intranet complète pour la gestion des étudiants et la génération de badges d'accès QR Code.",
-      tech: ["React", "Tailwind", "Vercel", "API"],
+      desc: "Application Intranet complète pour la gestion académique. Authentification, Tableau de bord temps réel et génération de badges QR Code pour le contrôle d'accès.",
+      tech: ["React.js", "Vite", "Tailwind CSS", "API QR"],
       image: "/projet-afrilane.png", 
-      demo: "https://afrilane-student-portal-3kdb.vercel.app",
+      demo: "https://afrilane-student-portal-3kdb.vercel.app", 
       github: "https://github.com/7even5iv/afrilane-student-portal"
     },
-    // Ajoute d'autres projets ici si tu veux
+    
+    // PROJET 2 : KMER DELICE
+    {
+      id: 2,
+      titre: "KmerDelice - Food Delivery",
+      desc: "Application de commande de repas adaptée au marché camerounais. Catalogue interactif, panier dynamique et validation de commande automatique via WhatsApp.",
+      tech: ["React.js", "WhatsApp API", "UX/UI Design", "Mobile First"],
+      image: "/projet-resto.png",
+      demo: "https://kmer-delice.vercel.app/",
+      github: "https://github.com/7even5iv/kmer-delice"
+    }
   ];
 
   const skills = [
