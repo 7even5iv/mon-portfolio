@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Github, Linkedin, Mail, ExternalLink, Code2, Terminal, Database, Smartphone, ChevronDown, Layers, Sparkles, Menu, X, Star, Zap, Heart, Send, Download, Globe, Cpu, Server, MessageCircle } from 'lucide-react';
+import { Github, Linkedin, Mail, ExternalLink, Code2, Terminal, Database, Smartphone, ChevronDown, Layers, Sparkles, Menu, X, Star, Zap, Heart, Send, Download, Globe, Cpu, Server, MessageCircle, Facebook, Home } from 'lucide-react';
 
 export default function App() {
   
@@ -19,6 +19,7 @@ export default function App() {
   const projetsRef = useRef();
   const competencesRef = useRef();
   const contactRef = useRef();
+  const menuRef = useRef();
   
   // --- SCROLL ANIMATIONS ---
   const { scrollYProgress } = useScroll({
@@ -63,26 +64,75 @@ export default function App() {
     return () => clearInterval(typingInterval);
   }, []);
 
-  // --- GESTION DU SCROLL POUR LES SECTIONS ---
+  // --- GESTION DU SCROLL POUR LES SECTIONS (CORRIGÉ) ---
   const handleScrollToSection = (section) => {
     setIsMenuOpen(false);
     setActiveTab(section);
     
-    switch(section) {
-      case 'accueil':
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        break;
-      case 'projets':
-        window.scrollTo({ top: projetsRef.current?.offsetTop - 80, behavior: 'smooth' });
-        break;
-      case 'competences':
-        window.scrollTo({ top: competencesRef.current?.offsetTop - 80, behavior: 'smooth' });
-        break;
-      case 'contact':
-        window.scrollTo({ top: contactRef.current?.offsetTop - 80, behavior: 'smooth' });
-        break;
-    }
+    // Petit délai pour la fermeture du menu
+    setTimeout(() => {
+      switch(section) {
+        case 'accueil':
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          break;
+        case 'projets':
+          const projetsElement = document.getElementById('projets');
+          if (projetsElement) {
+            const yOffset = -80; // Pour compenser la navbar fixe
+            const y = projetsElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            
+            window.scrollTo({
+              top: y,
+              behavior: 'smooth'
+            });
+          }
+          break;
+        case 'competences':
+          const competencesElement = document.getElementById('competences');
+          if (competencesElement) {
+            const yOffset = -80; // Pour compenser la navbar fixe
+            const y = competencesElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            
+            window.scrollTo({
+              top: y,
+              behavior: 'smooth'
+            });
+          }
+          break;
+        case 'contact':
+          const contactElement = document.getElementById('contact');
+          if (contactElement) {
+            const yOffset = -80; // Pour compenser la navbar fixe
+            const y = contactElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            
+            window.scrollTo({
+              top: y,
+              behavior: 'smooth'
+            });
+          }
+          break;
+      }
+    }, 150); // Délai pour la fermeture du menu
   };
+
+  // --- CLICK OUTSIDE POUR FERMER LE MENU MOBILE ---
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   // --- SUIVI DE LA SOURIS AVANCÉ ---
   useEffect(() => {
@@ -100,9 +150,10 @@ export default function App() {
   const profile = {
     nom: "Loïc Ngoumou",
     titre: "Développeur Web & Mobile | React.js & UX",
-    bio: "Je ne fais pas que coder, je conçois des expériences digitales. Spécialisé dans les applications modernes (SaaS, FoodTech) adaptées au marché africain.",
+    bio: "Je ne fais pas que coder, je conçois des expériences digitales. Spécialisé dans les applications modernes (SaaS, FoodTech et Autres) adaptées au marché camerounais et africain.",
     email: "loicngoumou75@gmail.com",
     github: "https://github.com/7even5iv",
+    facebook: "https://web.facebook.com/profile.php?id=61582833287960",
     whatsapp: "https://wa.me/237690316766",
     whatsappNumber: "+237 690 31 67 66",
     stats: [
@@ -234,6 +285,11 @@ export default function App() {
     }
   };
 
+  const menuItemAnimation = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0 }
+  };
+
   // --- COMPOSANT FOND ANIMÉ MODERNE ---
   const AnimatedBackground = () => {
     return (
@@ -300,130 +356,6 @@ export default function App() {
             }}
           />
         ))}
-
-        {/* Lignes de code flottantes */}
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={`code-${i}`}
-            className="fixed z-0 font-mono text-xs text-cyan-400/10 pointer-events-none"
-            style={{
-              left: `${(i * 15 + 5) % 100}%`,
-              top: `${(i * 12) % 100}%`,
-            }}
-            animate={{
-              y: [0, -100, -200],
-              opacity: [0, 0.5, 0]
-            }}
-            transition={{
-              duration: 10 + i * 2,
-              repeat: Infinity,
-              delay: i * 1.5,
-              ease: "linear"
-            }}
-          >
-            {i % 3 === 0 ? "const portfolio = { ... }" :
-             i % 3 === 1 ? "function animate() { ... }" :
-             "export default App;"}
-          </motion.div>
-        ))}
-
-        {/* Scanner vertical */}
-        <motion.div
-          className="fixed top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-cyan-500/40 to-transparent z-0"
-          style={{
-            boxShadow: '0 0 30px 2px rgba(6, 182, 212, 0.3)',
-            left: `${mousePosition.x * 0.1 + 50}%`
-          }}
-          animate={{
-            left: ['0%', '100%', '0%']
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-
-        {/* Cercles orbitaux */}
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={`orbit-${i}`}
-            className="fixed inset-0 z-0 border border-cyan-500/10 rounded-full"
-            style={{
-              margin: `${i * 100}px`,
-              rotate: i * 45
-            }}
-            animate={{
-              rotate: 360,
-              scale: [1, 1.1, 1]
-            }}
-            transition={{
-              rotate: {
-                duration: 40 - i * 10,
-                repeat: Infinity,
-                ease: "linear"
-              },
-              scale: {
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }
-            }}
-          />
-        ))}
-
-        {/* Noise texture animée */}
-        <motion.div 
-          className="fixed inset-0 z-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          }}
-          animate={{
-            backgroundPosition: ['0% 0%', '100% 100%']
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-      </>
-    );
-  };
-
-  // --- COMPOSANT PARTICULES INTERACTIVES ---
-  const InteractiveParticles = () => {
-    const particles = Array.from({ length: 40 });
-    
-    return (
-      <>
-        {particles.map((_, i) => (
-          <motion.div
-            key={`interactive-particle-${i}`}
-            className="fixed w-1 h-1 rounded-full z-0"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              background: `radial-gradient(circle, ${
-                Math.random() > 0.66 ? 'rgba(59, 130, 246, 0.6)' :
-                Math.random() > 0.33 ? 'rgba(139, 92, 246, 0.6)' :
-                'rgba(6, 182, 212, 0.6)'
-              }, transparent)`,
-            }}
-            animate={{
-              x: [0, mousePosition.x * 0.2, 0],
-              y: [0, mousePosition.y * 0.2, 0],
-              scale: [0, 1, 0],
-              opacity: [0, 0.5, 0]
-            }}
-            transition={{
-              duration: 2 + Math.random() * 3,
-              repeat: Infinity,
-              delay: i * 0.1,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
       </>
     );
   };
@@ -432,14 +364,10 @@ export default function App() {
     <div 
       ref={containerRef}
       className="min-h-screen text-white font-sans selection:bg-blue-500/30 selection:text-blue-200 overflow-x-hidden bg-[#0a0a0a]"
-      style={{
-        cursor: `url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='16' cy='16' r='4' fill='%233b82f6' opacity='0.7'/%3E%3C/svg%3E") 16 16, auto`
-      }}
     >
       
       {/* --- FOND ANIMÉ MODERNE --- */}
       <AnimatedBackground />
-      <InteractiveParticles />
       
       {/* --- PROGRESS BAR DE SCROLL AVANCÉE --- */}
       <motion.div 
@@ -500,8 +428,9 @@ export default function App() {
         <div className="absolute inset-0 rounded-full border-2 border-green-400/50 animate-ping opacity-75"></div>
       </motion.a>
 
-      {/* --- NAV BAR MODERNE --- */}
+      {/* --- NAV BAR MODERNE AVEC MENU MOBILE CORRIGÉ --- */}
       <motion.nav 
+        ref={menuRef}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
@@ -575,33 +504,72 @@ export default function App() {
               ))}
             </div>
 
-            {/* Bouton WhatsApp Desktop */}
-            <motion.a
-              href={profile.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-full text-sm font-bold hover:shadow-lg hover:shadow-green-500/30 transition-all relative overflow-hidden group"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: '100%' }}
-                transition={{ duration: 0.6 }}
-              />
-              <MessageCircle size={14} className="relative z-10" />
-              <span className="relative z-10">WhatsApp</span>
-            </motion.a>
+            {/* Boutons réseaux sociaux Desktop - Facebook et WhatsApp uniquement */}
+            <div className="hidden md:flex items-center gap-3">
+              {/* Bouton Facebook avec le même style que WhatsApp */}
+              <motion.a
+                href={profile.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full text-sm font-bold hover:shadow-lg hover:shadow-blue-500/30 transition-all relative overflow-hidden group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-500/20"
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: '100%' }}
+                  transition={{ duration: 0.6 }}
+                />
+                <Facebook size={14} className="relative z-10" />
+                <span className="relative z-10">Facebook</span>
+              </motion.a>
 
-            {/* Menu Mobile Toggle */}
+              {/* Bouton WhatsApp Desktop */}
+              <motion.a
+                href={profile.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-full text-sm font-bold hover:shadow-lg hover:shadow-green-500/30 transition-all relative overflow-hidden group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20"
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: '100%' }}
+                  transition={{ duration: 0.6 }}
+                />
+                <MessageCircle size={14} className="relative z-10" />
+                <span className="relative z-10">WhatsApp</span>
+              </motion.a>
+            </div>
+
+            {/* Menu Mobile Toggle - CORRIGÉ */}
             <motion.button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden p-2 text-gray-300 hover:text-white transition-colors relative"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+              aria-label="Menu"
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              <div className="relative w-6 h-6">
+                <motion.div
+                  className="absolute top-1 left-0 w-6 h-0.5 bg-white rounded-full"
+                  animate={isMenuOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.div
+                  className="absolute top-3 left-0 w-6 h-0.5 bg-white rounded-full"
+                  animate={isMenuOpen ? { opacity: 0 } : { opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.div
+                  className="absolute top-5 left-0 w-6 h-0.5 bg-white rounded-full"
+                  animate={isMenuOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
               <motion.div
                 className="absolute inset-0 rounded-full bg-blue-500/10"
                 animate={{ scale: isMenuOpen ? 1.5 : 0 }}
@@ -610,66 +578,136 @@ export default function App() {
             </motion.button>
           </div>
 
-          {/* Menu Mobile avec animations */}
+          {/* Menu Mobile - COMPLÈTEMENT CORRIGÉ */}
           <AnimatePresence>
             {isMenuOpen && (
               <motion.div
+                key="mobile-menu"
                 initial={{ opacity: 0, height: 0, y: -20 }}
                 animate={{ opacity: 1, height: 'auto', y: 0 }}
                 exit={{ opacity: 0, height: 0, y: -20 }}
                 className="md:hidden mt-4 bg-black/95 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl"
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                {[
-                  { id: 'accueil', label: 'Accueil' },
-                  { id: 'projets', label: 'Projets' },
-                  { id: 'competences', label: 'Compétences' },
-                  { id: 'contact', label: 'Contact' }
-                ].map((item, index) => (
-                  <motion.button
-                    key={item.id}
-                    onClick={() => handleScrollToSection(item.id)}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`block w-full text-left px-6 py-4 hover:bg-white/5 transition-all duration-300 border-b border-white/5 last:border-0 group ${
-                      activeTab === item.id ? 'text-blue-400' : 'text-gray-300'
-                    }`}
-                    whileHover={{ x: 10 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <motion.div
-                        className="w-1 h-4 rounded-full bg-gradient-to-b from-blue-500 to-cyan-500"
-                        animate={{ height: activeTab === item.id ? '1.5rem' : '0.5rem' }}
-                        transition={{ duration: 0.3 }}
-                      />
-                      {item.label}
-                      <motion.div
-                        className="ml-auto opacity-0 group-hover:opacity-100"
-                        initial={{ x: -10 }}
-                        whileHover={{ x: 0 }}
-                      >
-                        →
-                      </motion.div>
-                    </div>
-                  </motion.button>
-                ))}
-                {/* WhatsApp Mobile */}
-                <motion.a
-                  href={profile.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block px-6 py-4 bg-gradient-to-r from-green-600/20 to-emerald-600/20 text-green-400 hover:text-green-300 transition-colors border-t border-white/5"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  whileHover={{ scale: 1.02 }}
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                  className="py-2"
                 >
-                  <div className="flex items-center gap-2">
-                    <MessageCircle size={16} />
-                    WhatsApp
+                  {/* Accueil avec icône Lucide */}
+                  <motion.button
+                    onClick={() => handleScrollToSection('accueil')}
+                    variants={menuItemAnimation}
+                    className={`w-full text-left px-6 py-4 hover:bg-white/5 transition-all duration-300 border-b border-white/5 flex items-center gap-3 group ${
+                      activeTab === 'accueil' ? 'text-blue-400 bg-blue-500/10' : 'text-gray-300'
+                    }`}
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Home size={20} className="text-blue-400" />
+                    <span className="font-medium">Accueil</span>
+                    <motion.div
+                      className="ml-auto opacity-0 group-hover:opacity-100 text-blue-400"
+                      initial={{ x: -10 }}
+                      whileHover={{ x: 0 }}
+                    >
+                      →
+                    </motion.div>
+                  </motion.button>
+
+                  {/* Projets avec icône Lucide */}
+                  <motion.button
+                    onClick={() => handleScrollToSection('projets')}
+                    variants={menuItemAnimation}
+                    className={`w-full text-left px-6 py-4 hover:bg-white/5 transition-all duration-300 border-b border-white/5 flex items-center gap-3 group ${
+                      activeTab === 'projets' ? 'text-blue-400 bg-blue-500/10' : 'text-gray-300'
+                    }`}
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Layers size={20} className="text-blue-400" />
+                    <span className="font-medium">Projets</span>
+                    <motion.div
+                      className="ml-auto opacity-0 group-hover:opacity-100 text-blue-400"
+                      initial={{ x: -10 }}
+                      whileHover={{ x: 0 }}
+                    >
+                      →
+                    </motion.div>
+                  </motion.button>
+
+                  {/* Compétences avec icône Lucide */}
+                  <motion.button
+                    onClick={() => handleScrollToSection('competences')}
+                    variants={menuItemAnimation}
+                    className={`w-full text-left px-6 py-4 hover:bg-white/5 transition-all duration-300 border-b border-white/5 flex items-center gap-3 group ${
+                      activeTab === 'competences' ? 'text-blue-400 bg-blue-500/10' : 'text-gray-300'
+                    }`}
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Zap size={20} className="text-blue-400" />
+                    <span className="font-medium">Compétences</span>
+                    <motion.div
+                      className="ml-auto opacity-0 group-hover:opacity-100 text-blue-400"
+                      initial={{ x: -10 }}
+                      whileHover={{ x: 0 }}
+                    >
+                      →
+                    </motion.div>
+                  </motion.button>
+
+                  {/* Contact avec icône Lucide */}
+                  <motion.button
+                    onClick={() => handleScrollToSection('contact')}
+                    variants={menuItemAnimation}
+                    className={`w-full text-left px-6 py-4 hover:bg-white/5 transition-all duration-300 border-b border-white/5 flex items-center gap-3 group ${
+                      activeTab === 'contact' ? 'text-blue-400 bg-blue-500/10' : 'text-gray-300'
+                    }`}
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Send size={20} className="text-blue-400" />
+                    <span className="font-medium">Contact</span>
+                    <motion.div
+                      className="ml-auto opacity-0 group-hover:opacity-100 text-blue-400"
+                      initial={{ x: -10 }}
+                      whileHover={{ x: 0 }}
+                    >
+                      →
+                    </motion.div>
+                  </motion.button>
+                  
+                  {/* Réseaux sociaux Mobile */}
+                  <div className="flex border-t border-white/5">
+                    <motion.a
+                      href={profile.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variants={menuItemAnimation}
+                      className="flex-1 text-center px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white transition-colors border-r border-white/5 flex items-center justify-center gap-2"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Facebook size={18} />
+                      <span className="text-sm">Facebook</span>
+                    </motion.a>
+                    
+                    <motion.a
+                      href={profile.whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variants={menuItemAnimation}
+                      className="flex-1 text-center px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white transition-colors flex items-center justify-center gap-2"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <MessageCircle size={18} />
+                      <span className="text-sm">WhatsApp</span>
+                    </motion.a>
                   </div>
-                </motion.a>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -888,8 +926,6 @@ export default function App() {
                 variants={fadeInUp}
                 className="text-center p-6 bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-md rounded-2xl border border-white/10 hover:border-cyan-500/50 transition-all group relative overflow-hidden"
                 whileHover={{ y: -10, scale: 1.05 }}
-                onHoverStart={() => {}}
-                onHoverEnd={() => {}}
               >
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-cyan-500/10 to-blue-500/0"
@@ -960,6 +996,24 @@ export default function App() {
               <Github size={20} className="relative z-10" />
               <span className="relative z-10">GitHub</span>
             </motion.a>
+
+            <motion.a
+              href={profile.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-full hover:shadow-2xl hover:shadow-blue-500/30 transition-all flex items-center gap-2 group relative overflow-hidden"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-white/10 to-blue-500/0"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: '100%' }}
+                transition={{ duration: 0.6 }}
+              />
+              <Facebook size={20} className="relative z-10" />
+              <span className="relative z-10">Facebook</span>
+            </motion.a>
             
             <motion.a
               href={profile.whatsapp}
@@ -1001,14 +1055,13 @@ export default function App() {
         </motion.div>
       </motion.section>
 
-      {/* --- PROJETS SECTION AVEC ANIMATIONS MODERNES --- */}
+      {/* --- PROJETS SECTION --- */}
       <section 
         ref={projetsRef} 
         id="projets" 
         className="relative z-10 py-40 px-6"
       >
         <div className="max-w-7xl mx-auto">
-          {/* Header avec animation */}
           <motion.div 
             className="text-center mb-20"
             initial={{ opacity: 0, y: 50 }}
@@ -1040,178 +1093,70 @@ export default function App() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              Projets <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Innovants</span>
+              Projets <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Réalisés</span>
             </motion.h2>
-            <motion.p 
-              className="text-gray-400 max-w-2xl mx-auto"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-            >
-              Des solutions digitales modernes conçues avec passion et expertise
-            </motion.p>
           </motion.div>
 
-          {/* Projets grid avec animations */}
           <div className="grid md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
-                initial={{ opacity: 0, y: 100, rotateX: 45 }}
-                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                initial={{ opacity: 0, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: index * 0.2, duration: 0.8, type: "spring" }}
-                variants={cardHover}
-                whileHover="hover"
-                className="relative group perspective-1000"
+                transition={{ delay: index * 0.2, duration: 0.8 }}
+                className="relative group"
               >
-                {/* Effet de glow */}
-                <motion.div 
-                  className="absolute inset-0 rounded-3xl blur-xl"
-                  style={{ background: project.glowColor }}
-                  animate={{
-                    opacity: [0.1, 0.3, 0.1],
-                    scale: [1, 1.05, 1]
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    delay: index * 0.5
-                  }}
-                />
-                
-                {/* Carte principale */}
-                <div className="relative bg-gradient-to-br from-white/5 via-white/2 to-white/0 backdrop-blur-xl rounded-3xl border border-white/10 hover:border-blue-500/30 transition-all duration-500 overflow-hidden transform-gpu">
-                  
-                  {/* Image container */}
+                <div className="relative bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-sm rounded-3xl border border-white/10 hover:border-blue-500/30 transition-all duration-500 overflow-hidden">
                   <div className="h-64 overflow-hidden relative">
-                    {/* Gradient overlay */}
                     <div className={`absolute inset-0 bg-gradient-to-t ${project.color} opacity-20 group-hover:opacity-10 transition duration-500 z-10`}></div>
-                    
-                    {/* Image du projet avec animation */}
                     <motion.img 
                       src={project.image} 
                       alt={project.titre}
                       className="w-full h-full object-cover"
-                      variants={imageHover}
-                      initial="initial"
-                      whileHover="hover"
+                      whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.5 }}
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.parentElement.innerHTML = `
-                          <div class="w-full h-full flex items-center justify-center ${project.color.split(' ')[1]}">
-                            <div class="text-white text-center p-4">
-                              <Code2 size={48} class="mx-auto mb-2" />
-                              <p class="font-bold">${project.titre}</p>
-                              <p class="text-sm opacity-75">${project.category}</p>
-                            </div>
-                          </div>
-                        `;
-                      }}
                     />
-                    
-                    {/* Badge Catégorie avec animation */}
-                    <motion.div 
-                      className="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold border border-white/10 uppercase tracking-wide"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ type: "spring" }}
-                    >
+                    <div className="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold border border-white/10 uppercase tracking-wide">
                       {project.category}
-                    </motion.div>
-
-                    {/* Featured badge */}
-                    {project.featured && (
-                      <motion.div 
-                        className="absolute top-4 right-4 z-20"
-                        initial={{ rotate: 0, scale: 0 }}
-                        animate={{ rotate: 360, scale: 1 }}
-                        transition={{ duration: 0.5, delay: index * 0.3 }}
-                      >
-                        <div className="px-3 py-1 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 border border-yellow-500/30 rounded-full text-xs font-bold flex items-center gap-1">
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                          >
-                            <Star size={10} className="text-yellow-400" />
-                          </motion.div>
-                          FEATURED
-                        </div>
-                      </motion.div>
-                    )}
+                    </div>
                   </div>
 
-                  {/* Contenu du projet */}
                   <div className="p-8">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <motion.h3 
-                          className="text-2xl font-bold mb-3 group-hover:text-cyan-300 transition-colors"
-                          whileHover={{ x: 5 }}
-                        >
-                          {project.titre}
-                        </motion.h3>
-                      </div>
-                      <motion.a
-                        href={project.demo}
-                        target="_blank"
-                        rel="noreferrer"
-                        whileHover={{ rotate: 45, scale: 1.2 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <ExternalLink className="text-gray-500 group-hover:text-blue-400" />
-                      </motion.a>
-                    </div>
-
-                    <p className="text-gray-400 mb-6 leading-relaxed">
+                    <h3 className="text-2xl font-bold mb-3 group-hover:text-cyan-300 transition-colors">
+                      {project.titre}
+                    </h3>
+                    <p className="text-gray-400 mb-6">
                       {project.desc}
                     </p>
-
-                    {/* Tech stack avec animations */}
                     <div className="flex flex-wrap gap-2 mb-8">
                       {project.tech.map((tech, i) => (
                         <motion.span
                           key={i}
-                          className="px-3 py-1 bg-white/5 rounded-lg text-sm text-gray-300 border border-white/5 group/tech relative overflow-hidden"
-                          whileHover={{ 
-                            scale: 1.1, 
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            borderColor: 'rgba(59, 130, 246, 0.3)'
-                          }}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.1 }}
+                          className="px-3 py-1 bg-white/5 rounded-lg text-sm text-gray-300 border border-white/5"
+                          whileHover={{ scale: 1.1 }}
                         >
-                          <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-cyan-500/10 to-blue-500/0"
-                            initial={{ x: '-100%' }}
-                            whileHover={{ x: '100%' }}
-                            transition={{ duration: 0.4 }}
-                          />
-                          <span className="relative z-10">{tech}</span>
+                          {tech}
                         </motion.span>
                       ))}
                     </div>
-
-                    {/* Actions avec animations */}
                     <div className="flex items-center gap-4 pt-6 border-t border-white/5">
                       <motion.a
                         href={project.demo}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-2 text-white font-medium hover:text-blue-400 transition-colors group/demo"
+                        className="flex items-center gap-2 text-white font-medium hover:text-blue-400 transition-colors"
                         whileHover={{ x: 5 }}
                       >
                         <span>Voir la démo</span>
-                        <ExternalLink size={16} className="group-hover/demo:rotate-45 transition-transform" />
+                        <ExternalLink size={16} />
                       </motion.a>
                       <motion.a
                         href={project.github}
                         target="_blank"
                         rel="noreferrer"
                         className="text-gray-500 hover:text-white transition-colors"
-                        whileHover={{ scale: 1.2, rotate: 10 }}
+                        whileHover={{ scale: 1.2 }}
                       >
                         <Github size={20} />
                       </motion.a>
@@ -1221,43 +1166,21 @@ export default function App() {
               </motion.div>
             ))}
           </div>
-
-          {/* CTA supplémentaire */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="text-center mt-20"
-          >
-            <motion.a
-              href="#contact"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30 text-blue-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-600/30 rounded-full font-bold transition-all"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleScrollToSection('contact')}
-            >
-              <Send size={20} />
-              Discutons de votre projet
-            </motion.a>
-          </motion.div>
         </div>
       </section>
 
-      {/* --- COMPÉTENCES SECTION AVEC ANIMATIONS MODERNES --- */}
+      {/* --- COMPÉTENCES SECTION --- */}
       <section 
         ref={competencesRef}
         id="competences" 
         className="relative z-10 py-40 px-6"
       >
         <div className="max-w-6xl mx-auto">
-          {/* Header */}
           <motion.div
             className="text-center mb-20"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
           >
             <motion.div
               className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full mb-6 backdrop-blur-sm"
@@ -1266,350 +1189,214 @@ export default function App() {
               <Zap className="text-cyan-400" size={16} />
               <span className="text-sm text-cyan-400 font-medium tracking-widest">EXPERTISE TECHNIQUE</span>
             </motion.div>
-            <motion.h2 
-              className="text-5xl md:text-6xl font-black mb-6"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-            >
+            <h2 className="text-5xl md:text-6xl font-black mb-6">
               Mes <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Compétences</span>
-            </motion.h2>
+            </h2>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-12">
-            {/* Skills avec animations interactives */}
             <div className="space-y-8">
               {skills.map((skill, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: -50 }}
+                  initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, type: "spring" }}
-                  className="space-y-3 group"
-                  onMouseEnter={() => setHoveredSkill(index)}
-                  onMouseLeave={() => setHoveredSkill(null)}
+                  transition={{ delay: index * 0.1 }}
+                  className="space-y-3"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <motion.div
-                        className={`p-2 rounded-lg bg-gradient-to-br ${skill.color} bg-opacity-20`}
-                        animate={hoveredSkill === index ? { rotate: 360 } : { rotate: 0 }}
-                        transition={{ duration: 0.5 }}
-                      >
+                      <div className="text-cyan-400">
                         {skill.icon}
-                      </motion.div>
+                      </div>
                       <span className="font-medium">{skill.name}</span>
                     </div>
-                    <motion.span 
-                      className="text-sm text-gray-400"
-                      animate={hoveredSkill === index ? { scale: 1.2 } : { scale: 1 }}
-                    >
-                      {skill.level}%
-                    </motion.span>
+                    <span className="text-sm text-gray-400">{skill.level}%</span>
                   </div>
-                  <div className="h-2 bg-white/5 rounded-full overflow-hidden relative">
-                    {/* Barre de progression */}
+                  <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${skill.level}%` }}
                       viewport={{ once: true }}
-                      transition={{ duration: 1.5, delay: index * 0.1, ease: "easeOut" }}
+                      transition={{ duration: 1, delay: index * 0.1 }}
                       className={`h-full rounded-full bg-gradient-to-r ${skill.color}`}
-                    >
-                      {/* Effet de brillance */}
-                      <motion.div
-                        className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                        initial={{ x: '-100%' }}
-                        animate={{ x: '300%' }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          delay: index * 0.2,
-                          ease: "easeInOut"
-                        }}
-                      />
-                    </motion.div>
+                    />
                   </div>
                 </motion.div>
               ))}
             </div>
 
-            {/* Description expertise avec animations */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl rounded-3xl border border-white/10 p-8"
+              className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm rounded-3xl border border-white/10 p-8"
             >
-              <motion.h3 
-                className="text-2xl font-bold mb-6"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
-              >
-                Pourquoi me <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">choisir</span> ?
-              </motion.h3>
-              
+              <h3 className="text-2xl font-bold mb-6">
+                Pourquoi me <span className="text-cyan-400">choisir</span> ?
+              </h3>
               <div className="space-y-6">
                 {[
                   {
                     icon: <Heart className="text-red-400" size={20} />,
                     title: "Passionné",
-                    desc: "Je m'investis à 100% dans chaque projet avec créativité et rigueur.",
-                    color: "from-red-500/20 to-pink-500/20"
+                    desc: "Je m'investis à 100% dans chaque projet avec créativité et rigueur."
                   },
                   {
                     icon: <Zap className="text-yellow-400" size={20} />,
                     title: "Rapide",
-                    desc: "Développement agile avec des délais optimisés sans sacrifier la qualité.",
-                    color: "from-yellow-500/20 to-orange-500/20"
+                    desc: "Développement agile avec des délais optimisés sans sacrifier la qualité."
                   },
                   {
                     icon: <Sparkles className="text-purple-400" size={20} />,
                     title: "Innovant",
-                    desc: "Toujours à la pointe des dernières technologies et tendances UI/UX.",
-                    color: "from-purple-500/20 to-pink-500/20"
+                    desc: "Toujours à la pointe des dernières technologies et tendances UI/UX."
                   }
                 ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
-                    className="flex items-start gap-4 group"
-                    whileHover={{ x: 10 }}
-                  >
-                    <motion.div
-                      className={`p-3 rounded-xl bg-gradient-to-br ${item.color} backdrop-blur-sm`}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                    >
+                  <div key={index} className="flex items-start gap-4">
+                    <div className="p-2 bg-white/5 rounded-lg">
                       {item.icon}
-                    </motion.div>
+                    </div>
                     <div>
-                      <h4 className="font-bold mb-1 group-hover:text-cyan-300 transition-colors">
-                        {item.title}
-                      </h4>
+                      <h4 className="font-bold mb-1">{item.title}</h4>
                       <p className="text-gray-400 text-sm">{item.desc}</p>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
-
-              {/* Bouton supplémentaire */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7 }}
-                className="mt-8 pt-8 border-t border-white/10"
-              >
-                <motion.a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30 text-blue-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-600/30 rounded-full transition-all"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleScrollToSection('contact')}
-                >
-                  <Download size={18} />
-                  <span>Télécharger mon CV</span>
-                </motion.a>
-              </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* --- CONTACT SECTION AVEC ANIMATIONS --- */}
+      {/* --- CONTACT SECTION --- */}
       <section 
         ref={contactRef}
         id="contact" 
         className="relative z-10 py-40 px-6"
       >
         <div className="max-w-4xl mx-auto text-center">
-          {/* Header avec animations */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
             className="mb-12"
           >
             <motion.div
               className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full mb-6 backdrop-blur-sm"
               whileHover={{ scale: 1.1 }}
-              whileInView={{ rotate: [0, 360] }}
-              transition={{ duration: 2, delay: 0.5 }}
             >
               <Send className="text-blue-400" size={16} />
               <span className="text-sm bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent font-medium tracking-widest">
                 TRAVAILLONS ENSEMBLE
               </span>
             </motion.div>
-            
-            <motion.h3 
-              className="text-4xl md:text-5xl font-black mb-6"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-            >
+            <h3 className="text-4xl md:text-5xl font-black mb-6">
               Prêt à donner vie à votre <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">projet</span> ?
-            </motion.h3>
-            <motion.p 
-              className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-            >
+            </h3>
+            <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
               Contactez-moi pour discuter de votre idée ou pour toute collaboration
-            </motion.p>
+            </p>
           </motion.div>
 
-          {/* Contact info avec animations */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {[
-              {
-                icon: <Mail className="text-blue-400" size={20} />,
-                title: "Email",
-                content: profile.email,
-                color: "from-blue-500/20 to-cyan-500/20",
-                borderColor: "hover:border-blue-500/30",
-                href: `mailto:${profile.email}`
-              },
-              {
-                icon: <Github className="text-blue-400" size={20} />,
-                title: "GitHub",
-                content: "@7even5iv",
-                color: "from-blue-500/20 to-cyan-500/20",
-                borderColor: "hover:border-blue-500/30",
-                href: profile.github
-              },
-              {
-                icon: <MessageCircle className="text-green-400" size={20} />,
-                title: "WhatsApp",
-                content: profile.whatsappNumber,
-                color: "from-green-500/20 to-emerald-500/20",
-                borderColor: "hover:border-green-500/30",
-                href: profile.whatsapp
-              }
-            ].map((item, index) => (
-              <motion.a
-                key={index}
-                href={item.href}
-                target={item.title !== "Email" ? "_blank" : undefined}
-                rel="noopener noreferrer"
-                className={`p-6 bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-xl rounded-2xl border border-white/10 ${item.borderColor} transition-all group relative overflow-hidden`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 + index * 0.1 }}
-                whileHover={{ y: -10, scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <motion.div
-                  className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                />
-                <div className="relative z-10">
-                  <motion.div
-                    className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mb-4 group-hover:scale-110 transition-transform"
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    {item.icon}
-                  </motion.div>
-                  <h4 className="font-bold mb-2">{item.title}</h4>
-                  <p className="text-gray-400 text-sm break-all group-hover:text-gray-300 transition-colors">
-                    {item.content}
-                  </p>
-                  {item.title === "WhatsApp" && (
-                    <motion.span 
-                      className="text-xs text-green-400 mt-2 block"
-                      animate={{ opacity: [1, 0.5, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      💬 Réponse rapide garantie
-                    </motion.span>
-                  )}
-                </div>
-              </motion.a>
-            ))}
+          <div className="grid md:grid-cols-4 gap-6 mb-12">
+            <motion.a
+              href={`mailto:${profile.email}`}
+              className="p-6 bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-blue-500/30 transition-all group"
+              whileHover={{ y: -5 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mb-4">
+                <Mail className="text-blue-400" size={20} />
+              </div>
+              <h4 className="font-bold mb-2">Email</h4>
+              <p className="text-gray-400 text-sm break-all">{profile.email}</p>
+            </motion.a>
+
+            <motion.a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-6 bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-blue-500/30 transition-all group"
+              whileHover={{ y: -5 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mb-4">
+                <Github className="text-blue-400" size={20} />
+              </div>
+              <h4 className="font-bold mb-2">GitHub</h4>
+              <p className="text-gray-400 text-sm">@7even5iv</p>
+            </motion.a>
+
+            <motion.a
+              href={profile.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-6 bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-blue-500/30 transition-all group"
+              whileHover={{ y: -5 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mb-4">
+                <Facebook className="text-blue-400" size={20} />
+              </div>
+              <h4 className="font-bold mb-2">Facebook</h4>
+              <p className="text-gray-400 text-sm">@Loic Dev Studio</p>
+            </motion.a>
+
+            <motion.a
+              href={profile.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-6 bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-green-500/30 transition-all group"
+              whileHover={{ y: -5 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 mb-4">
+                <MessageCircle className="text-green-400" size={20} />
+              </div>
+              <h4 className="font-bold mb-2">WhatsApp</h4>
+              <p className="text-gray-400 text-sm">{profile.whatsappNumber}</p>
+              <span className="text-xs text-green-400 mt-2 block">💬 Réponse rapide garantie</span>
+            </motion.a>
           </div>
 
-          {/* Boutons de contact avec animations */}
           <div className="flex flex-wrap justify-center gap-4">
             <motion.a
               href={`mailto:${profile.email}?subject=Collaboration%20avec%20Loïc%20Ngoumou&body=Bonjour%20Loïc,%0D%0A%0D%0AJe%20suis%20intéressé(e)%20par%20vos%20services...`}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-full hover:shadow-2xl hover:shadow-blue-500/30 transition-all relative overflow-hidden group"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-full hover:shadow-2xl hover:shadow-blue-500/30 transition-all"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-white/10 to-cyan-400/0"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: '100%' }}
-                transition={{ duration: 0.6 }}
-              />
-              <Send size={20} className="relative z-10" />
-              <span className="relative z-10">Envoyer un email</span>
+              <Send size={20} /> Envoyer un email
             </motion.a>
             
             <motion.a
               href={profile.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-full hover:shadow-2xl hover:shadow-green-500/30 transition-all relative overflow-hidden group"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-full hover:shadow-2xl hover:shadow-green-500/30 transition-all"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-green-400/0 via-white/10 to-emerald-400/0"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: '100%' }}
-                transition={{ duration: 0.6 }}
-              />
-              <MessageCircle size={20} className="relative z-10" />
-              <span className="relative z-10">Message WhatsApp</span>
+              <MessageCircle size={20} /> Message WhatsApp
             </motion.a>
           </div>
         </div>
       </section>
 
-      {/* --- FOOTER AVEC ANIMATIONS --- */}
-      <footer className="relative z-10 py-12 px-6 border-t border-white/10 bg-black/30 backdrop-blur-sm">
+      {/* --- FOOTER --- */}
+      <footer className="relative z-10 py-12 px-6 border-t border-white/10 bg-black/30">
         <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex flex-col md:flex-row justify-between items-center gap-6"
-          >
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="text-center md:text-left">
               <div className="flex items-center gap-3 justify-center md:justify-start mb-3">
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <img 
-                    src="/mon-logo.png" 
-                    alt="Logo" 
-                    className="w-8 h-8 rounded-full ring-2 ring-blue-500/30"
-                    onError={(e) => e.target.style.display='none'}
-                  />
-                </motion.div>
+                <img 
+                  src="/mon-logo.png" 
+                  alt="Logo" 
+                  className="w-8 h-8 rounded-full ring-2 ring-blue-500/30"
+                  onError={(e) => e.target.style.display='none'}
+                />
                 <span className="text-sm font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                   Code & Design
                 </span>
@@ -1619,60 +1406,60 @@ export default function App() {
               </p>
             </div>
 
-            {/* Liens sociaux avec animations */}
             <div className="flex gap-4">
-              {[
-                { icon: <Github size={18} />, href: profile.github, color: "hover:text-white" },
-                { icon: <Mail size={18} />, href: `mailto:${profile.email}`, color: "hover:text-blue-400" },
-                { icon: <MessageCircle size={18} className="text-green-400" />, href: profile.whatsapp, color: "hover:text-green-400" }
-              ].map((item, index) => (
-                <motion.a
-                  key={index}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-400 transition-all relative group"
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 * index }}
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <motion.div
-                    className={`absolute inset-0 rounded-lg ${item.color} opacity-0 group-hover:opacity-20`}
-                    animate={{ scale: [1, 1.5, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                  {item.icon}
-                </motion.a>
-              ))}
+              <motion.a
+                href={profile.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-all"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Github size={18} />
+              </motion.a>
+              <motion.a
+                href={profile.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-400 hover:text-blue-400 transition-all"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Facebook size={18} />
+              </motion.a>
+              <motion.a
+                href={`mailto:${profile.email}`}
+                className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-all"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Mail size={18} />
+              </motion.a>
+              <motion.a
+                href={profile.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-400 hover:text-green-400 transition-all"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <MessageCircle size={18} className="text-green-400" />
+              </motion.a>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Copyright avec animation */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="text-center mt-8 pt-6 border-t border-white/5"
-          >
+          <div className="text-center mt-8 pt-6 border-t border-white/5">
             <p className="text-gray-600 text-sm">
               © {new Date().getFullYear()} Loïc Ngoumou. Tous droits réservés.
             </p>
-            <motion.p 
-              className="text-gray-700 text-xs mt-1"
-              animate={{ opacity: [1, 0.5, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              Code & Design avec ❤️
-            </motion.p>
-          </motion.div>
+            <p className="text-gray-700 text-xs mt-1">
+              Code & Design
+            </p>
+          </div>
         </div>
       </footer>
 
-      {/* Ajout des styles CSS pour animations supplémentaires */}
+      {/* Styles CSS */}
       <style jsx>{`
         @keyframes gradient {
           0% { background-position: 0% center; }
@@ -1682,19 +1469,6 @@ export default function App() {
         .animate-gradient {
           background-size: 200% auto;
           animation: gradient 3s linear infinite;
-        }
-        
-        .perspective-1000 {
-          perspective: 1000px;
-        }
-        
-        .transform-gpu {
-          transform: translateZ(0);
-        }
-        
-        /* Cursor personnalisé */
-        body {
-          cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='16' cy='16' r='4' fill='%233b82f6' opacity='0.7'/%3E%3C/svg%3E") 16 16, auto;
         }
       `}</style>
     </div>
