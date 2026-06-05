@@ -190,6 +190,19 @@ export default function App() {
       featured: true,
       glowColor: "rgba(249, 115, 22, 0.5)",
       color: "from-orange-500 to-red-500"
+    },
+    {
+      id: 3,
+      titre: "WAKA",
+      category: "FoodTech / E-commerce",
+      desc: "Plateforme de commande de repas pour les étudiants. Interface utilisateur moderne et processus de commande simplifié.",
+      tech: ["React", "WhatsApp API", "Framer Motion"],
+      image: "/projet-waka.png",
+      demo: "https://waka-gold.vercel.app",
+      github: "https://github.com/7even5iv/waka",
+      featured: false,
+      glowColor: "rgba(249, 115, 22, 0.5)",
+      color: "from-orange-500 to-red-500"
     }
   ];
 
