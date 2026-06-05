@@ -203,6 +203,19 @@ export default function App() {
       featured: false,
       glowColor: "rgba(249, 115, 22, 0.5)",
       color: "from-orange-500 to-red-500"
+    },
+    {
+      id: 4,
+      titre: "NOZIAH ACADEMY",
+      category: "EdTech / SaaS",
+      desc: "Plateforme d'oganisation d'évènements et formation des hotesses.",
+      tech: ["Next"],
+      image: "/projet-noziah.png",
+      demo: "https://noziah-academy.vercel.app",
+      github: "https://github.com/7even5iv/noziah-academy",
+      featured: false,
+      glowColor: "rgba(59, 130, 246, 0.5)",
+      color: "from-blue-600 to-cyan-500"
     }
   ];
 
